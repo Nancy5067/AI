@@ -1,0 +1,36 @@
+#Implement the decision tree learning algorithm to build a decision tree for a given dataset. Evaluate the accuracy and efficiency on the test data set.
+
+import pandas as pd
+#loading the Playtennis data
+t1 = pd.read_csv(r"C:\Users\Khansa\Downloads\archive\play_tennis.csv")
+print(t1)
+
+t1.shape
+t1.describe()
+t1.dtypes
+t1.head(4)
+
+t1.tail(6)
+
+t1.columns
+
+from sklearn.preprocessing import LabelEncoder
+le= LabelEncoder()
+t1['day'] = le.fit_transform(t1['day'])
+t1['outlook'] = le.fit_transform(t1['outlook'])
+t1['temp'] = le.fit_transform(t1['temp'])
+t1['humidity'] = le.fit_transform(t1['humidity'])
+t1['wind'] = le.fit_transform(t1['wind'])
+t1['play'] = le.fit_transform(t1['play'])
+t1
+
+y=t1['play']
+x=t1.drop(['play'], axis =1)
+
+#fitting the model
+from sklearn import tree
+clf = tree.DecisionTreeClassifier(criterion ='entropy')
+clf = clf.fit(x,y)
+tree.plot_tree(clf)
+
+tree.plot_tree(clf)
