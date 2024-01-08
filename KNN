@@ -1,0 +1,51 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+
+df = pd.read_csv(r"C:\Users\Khansa\Downloads\archive (6)\diabetes.csv")
+print(df.head())
+print(df.shape)
+
+x = df.drop('Outcome', axis=1).values
+y = df['Outcome'].values
+
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.3,random_state=42)
+
+from sklearn.neighbors import KNeighborsClassifier
+neighbors = np.arange(1,9)
+train_accuracy = np.empty(len(neighbors))
+test_accuracy = np.empty(len(neighbors))
+
+for i,k in enumerate(neighbors):
+  knn = KNeighborsClassifier(n_neighbors=k)
+  knn.fit(x_train, y_train)
+  train_accuracy[i] = knn.score(x_train, y_train)
+  test_accuracy[i] = knn.score(x_test, y_test)
+
+plt.title('K-NN Varying number of neighbors')
+plt.plot(neighbors, test_accuracy, label='Testing Accuracy')
+plt.plot(neighbors, train_accuracy, label='Training Accuracy')
+plt.legend()
+plt.xlabel('Number of neighbors')
+plt.ylabel('Accuracy')
+plt.show()
+
+knn = KNeighborsClassifier(n_neighbors=7)
+knn.fit(x_train,y_train)
+knn.score(x_test,y_test)
+
+from sklearn.metrics import confusion_matrix
+y_pred = knn.predict(x_test)
+confusion_matrix(y_test,y_pred)
+
+from sklearn.metrics import roc_curve
+fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
+
+plt.plot([0,1],[0,1],'k--')
+plt.plot(fpr,tpr, label='Knn')
+plt.xlabel('fpr')
+plt.ylabel('tpr')
+plt.title('Knn(n_neighbors=7) ROC curve')
+plt.show()
